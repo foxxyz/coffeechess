@@ -1,0 +1,154 @@
+/*
+Coffee CheSS Stylesheet
+
+Author: Ivo Janssen (foxxyz)
+http://codedealers.com
+*/
+/*******************************
+
+	GENERAL STYLES
+
+*******************************/
+* {
+  margin: 0;
+  padding: 0; }
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: Arial, sans-serif;
+  -webkit-perspective: 600px; }
+
+h1 {
+  text-align: center;
+  font-variant: small-caps;
+  color: #91A0C1;
+  margin: 1em auto 0;
+  letter-spacing: .2em;
+  width: 20em;
+  border-radius: .4em;
+  -moz-border-radius: .4em;
+  -webkit-border-radius: .4em;
+  padding: .3em 0; }
+  h1.checked {
+    background-color: #f00;
+    color: #fff; }
+
+.promotion {
+  background-color: #03CD0D;
+  color: #fff;
+  top: 50%;
+  position: fixed;
+  left: 50%;
+  margin-left: -25%;
+  width: 50%;
+  height: 100px;
+  margin-top: -50px;
+  z-index: 10;
+  opacity: .9;
+  text-align: center;
+  display: none; }
+  .promotion span {
+    font-size: 3em; }
+    .promotion span:hover {
+      cursor: pointer;
+      text-shadow: #fff 0px 0px 10px; }
+
+#board div {
+  width: 1em;
+  height: 1em;
+  float: left;
+  background-color: #96631A;
+  color: inherit; }
+  #board div:nth-child(9n - 8), #board div:nth-child(9n - 6), #board div:nth-child(9n - 4), #board div:nth-child(9n - 2), #board div:nth-child(9n + 17), #board div:nth-child(9n + 33), #board div:nth-child(9n + 49) {
+    background-color: #F19C23;
+    color: inherit; }
+  #board div:nth-child(9n + 25), #board div:nth-child(9n + 41), #board div:nth-child(9n + 57) {
+    background-color: #96631A;
+    color: inherit; }
+
+#game {
+  font-size: 4em;
+  width: 8em;
+  height: 8em;
+  margin: .5em auto;
+  border: solid 1em #000;
+  position: relative;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform: rotateX(54deg) rotateZ(21deg) rotateY(-6deg);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+#pieces span, #possible_moves span {
+  display: block;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  -webkit-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em); }
+
+#pieces {
+  /* disclaimer: this is bad. */ }
+  #pieces .active span:hover {
+    text-shadow: #fff 0px 0px 20px; }
+  #pieces #black {
+    color: #000;
+    background-color: inherit;
+    text-shadow: 0 0 3px #fff; }
+  #pieces #white {
+    color: #fff;
+    background-color: inherit; }
+    #pieces #white span {
+      top: 7em; }
+    #pieces #white .pawn {
+      top: 6em; }
+  #pieces .bishop {
+    left: 2em; }
+    #pieces .bishop + .bishop {
+      left: 5em; }
+  #pieces .king {
+    left: 4em; }
+  #pieces .knight {
+    left: 1em; }
+    #pieces .knight + .knight {
+      left: 6em; }
+  #pieces .pawn {
+    top: 1em; }
+    #pieces .pawn + .pawn {
+      left: 1em; }
+      #pieces .pawn + .pawn + .pawn {
+        left: 2em; }
+        #pieces .pawn + .pawn + .pawn + .pawn {
+          left: 3em; }
+          #pieces .pawn + .pawn + .pawn + .pawn + .pawn {
+            left: 4em; }
+            #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+              left: 5em; }
+              #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+                left: 6em; }
+                #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+                  left: 7em; }
+  #pieces .queen {
+    left: 3em; }
+  #pieces .rook + .rook {
+    left: 7em; }
+  #pieces .selected {
+    text-shadow: #fff 0px 0px 20px; }
+
+#possible_moves span {
+  opacity: .1; }
+  #possible_moves span:hover {
+    opacity: .3; }
+#possible_moves .capture {
+  background-color: #f00;
+  opacity: .3; }
+  #possible_moves .capture:hover {
+    opacity: .5; }
