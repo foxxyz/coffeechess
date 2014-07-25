@@ -1,0 +1,9 @@
+*.pyc
+*.css
+.sass-cache
+.bundle
+tmp/*
+
+# mac
+*._*
+.DS_Store
