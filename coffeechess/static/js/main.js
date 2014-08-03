@@ -6,40 +6,67 @@
 
   em_value = 64;
 
-  Chess = (function() {
+  window.Chess = Chess = (function() {
     Chess.players = ['white', 'black'];
 
-    function Chess(board) {
-      var x, y;
+    function Chess(dom, board) {
+      this.dom = dom;
       this.board = board;
       this.moves = [];
       this.en_passant = false;
       this.promotion = false;
       this.active = false;
       this.player = null;
-      this.board = (function() {
-        var _i, _results;
-        _results = [];
-        for (x = _i = 0; _i <= 7; x = ++_i) {
-          _results.push((function() {
-            var _j, _results1;
-            _results1 = [];
-            for (y = _j = 0; _j <= 7; y = ++_j) {
-              _results1.push(null);
-            }
-            return _results1;
-          })());
-        }
-        return _results;
-      })();
+      this.in_check = false;
+      this.board = this.set_up(this.board);
     }
 
     Chess.prototype.add = function(piece) {
       return this.board[piece.x][piece.y] = piece;
     };
 
+    Chess.prototype.check_exists = function(with_piece, at_position) {
+      var current_position, in_check, piece, piece_at_new_position, position, under_attack, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+      if ((with_piece != null) && (at_position != null)) {
+        piece_at_new_position = this.board[at_position.x][at_position.y];
+        this.remove(with_piece);
+        current_position = {
+          x: with_piece.x,
+          y: with_piece.y
+        };
+        _ref = [at_position.x, at_position.y], with_piece.x = _ref[0], with_piece.y = _ref[1];
+        this.add(with_piece);
+      }
+      _ref1 = this.pieces();
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        piece = _ref1[_i];
+        _ref2 = piece.possible_moves(false);
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          position = _ref2[_j];
+          under_attack = this.piece(position);
+          if (under_attack instanceof King) {
+            in_check = under_attack.color;
+          }
+        }
+      }
+      if ((with_piece != null) && (at_position != null)) {
+        _ref3 = [current_position.x, current_position.y], with_piece.x = _ref3[0], with_piece.y = _ref3[1];
+        this.board[at_position.x][at_position.y] = piece_at_new_position;
+        this.add(with_piece);
+      }
+      return in_check;
+    };
+
     Chess.prototype.draw = function() {
-      return $("#" + this.player).addClass("active").siblings().removeClass("active");
+      $("#" + this.player).addClass("active").siblings().removeClass("active");
+      if (this.in_check) {
+        game.dom.addClass("in_check");
+      } else {
+        game.dom.removeClass("in_check");
+      }
+      if (this.in_check && !this.active) {
+        return game.dom.addClass("mate");
+      }
     };
 
     Chess.prototype.invalid = function(position) {
@@ -47,7 +74,24 @@
     };
 
     Chess.prototype.next_turn = function() {
+      var active_pieces, piece;
       this.player = this.player === 'white' ? 'black' : 'white';
+      this.in_check = this.check_exists();
+      if (this.in_check) {
+        active_pieces = (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.pieces();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            piece = _ref[_i];
+            if (piece.possible_moves().length > 0 && piece.color === this.in_check) {
+              _results.push(piece);
+            }
+          }
+          return _results;
+        }).call(this);
+        this.active = active_pieces.length !== 0;
+      }
       return this.draw();
     };
 
@@ -56,6 +100,22 @@
         return this.en_passant.piece;
       }
       return this.board[position.x][position.y];
+    };
+
+    Chess.prototype.pieces = function() {
+      var col, pieces, square, _i, _j, _len, _len1, _ref;
+      pieces = [];
+      _ref = this.board;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        col = _ref[_i];
+        for (_j = 0, _len1 = col.length; _j < _len1; _j++) {
+          square = col[_j];
+          if (square) {
+            pieces.push(square);
+          }
+        }
+      }
+      return pieces;
     };
 
     Chess.prototype.promote = function(pawn) {
@@ -79,6 +139,71 @@
       return this.board[piece.x][piece.y] = null;
     };
 
+    Chess.prototype.set_up = function(fen_string) {
+      var board, board_string, char, color, piece, player, x, y, _i, _len, _ref, _ref1;
+      board = (function() {
+        var _i, _results;
+        _results = [];
+        for (x = _i = 0; _i <= 7; x = ++_i) {
+          _results.push((function() {
+            var _j, _results1;
+            _results1 = [];
+            for (y = _j = 0; _j <= 7; y = ++_j) {
+              _results1.push(null);
+            }
+            return _results1;
+          })());
+        }
+        return _results;
+      })();
+      if (fen_string == null) {
+        return board;
+      }
+      _ref = fen_string.split(" "), board_string = _ref[0], player = _ref[1];
+      _ref1 = [0, 0], x = _ref1[0], y = _ref1[1];
+      for (_i = 0, _len = board_string.length; _i < _len; _i++) {
+        char = board_string[_i];
+        piece = null;
+        switch (char.toLowerCase()) {
+          case "b":
+            piece = Bishop;
+            break;
+          case "k":
+            piece = King;
+            break;
+          case "n":
+            piece = Knight;
+            break;
+          case "p":
+            piece = Pawn;
+            break;
+          case "q":
+            piece = Queen;
+            break;
+          case "r":
+            piece = Rook;
+            break;
+          case "/":
+            y += 1;
+            x = 0;
+            break;
+          default:
+            x += parseInt(char);
+        }
+        if (piece == null) {
+          continue;
+        }
+        color = char.charCodeAt() < 90 ? "black" : "white";
+        board[x][y] = new piece($(""), this, color, {
+          "x": x,
+          "y": y
+        });
+        x += 1;
+      }
+      this.player = player === "w" ? "white" : "black";
+      return board;
+    };
+
     Chess.prototype.start = function() {
       this.active = true;
       return this.next_turn();
@@ -93,8 +218,9 @@
   })();
 
   Piece = (function() {
-    function Piece(dom_object, color, position, parent) {
+    function Piece(dom_object, game, color, position, parent) {
       this.dom_object = dom_object;
+      this.game = game;
       this.color = color;
       this.parent = parent;
       if (position) {
@@ -119,7 +245,7 @@
     Piece.prototype.deselect = function() {
       $('#pieces span').removeClass("selected");
       $("#possible_moves").empty();
-      return game.next_turn();
+      return this.game.next_turn();
     };
 
     Piece.prototype.draw = function(fluid) {
@@ -158,13 +284,13 @@
 
     Piece.prototype.move = function(position) {
       var captured, rook_position, _ref;
-      game.remove(this);
-      game.record(this, position);
+      this.game.remove(this);
+      this.game.record(this, position);
       _ref = [position.x, position.y], this.x = _ref[0], this.y = _ref[1];
       if (position.capture) {
-        captured = game.piece(position);
+        captured = this.game.piece(position);
         captured.dom_object.fadeOut();
-        game.remove(captured);
+        this.game.remove(captured);
       }
       if (position.castle) {
         rook_position = {
@@ -173,15 +299,15 @@
         };
         position.castle.move(rook_position);
       }
-      game.en_passant = position.en_passant ? {
+      this.game.en_passant = position.en_passant ? {
         piece: this,
         position: position.en_passant
       } : false;
-      game.add(this);
+      this.game.add(this);
       this.touched = true;
       this.draw(true);
       this.post_move();
-      return game.draw();
+      return this.game.draw();
     };
 
     Piece.prototype.position = function() {
@@ -191,8 +317,11 @@
       };
     };
 
-    Piece.prototype.possible_moves = function() {
-      var moves, n, pos, position, _i, _j, _len, _ref, _ref1;
+    Piece.prototype.possible_moves = function(filter_checks) {
+      var move, moves, n, pos, position, _i, _j, _len, _ref, _ref1;
+      if (filter_checks == null) {
+        filter_checks = true;
+      }
       moves = [];
       _ref = this.constructor.move_matrix;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -202,11 +331,11 @@
             x: this.x + pos[0] * n,
             y: this.y + pos[1] * n
           };
-          if (game.invalid(position)) {
+          if (this.game.invalid(position)) {
             break;
           }
-          if (game.piece(position)) {
-            if (game.piece(position).color !== this.color) {
+          if (this.game.piece(position)) {
+            if (this.game.piece(position).color !== this.color) {
               position.capture = true;
               moves.push(position);
             }
@@ -215,6 +344,19 @@
           moves.push(position);
         }
       }
+      if (filter_checks) {
+        moves = (function() {
+          var _k, _len1, _results;
+          _results = [];
+          for (_k = 0, _len1 = moves.length; _k < _len1; _k++) {
+            move = moves[_k];
+            if (this.game.check_exists(this, move) !== this.color) {
+              _results.push(move);
+            }
+          }
+          return _results;
+        }).call(this);
+      }
       return moves;
     };
 
@@ -222,7 +364,7 @@
 
     Piece.prototype.select = function() {
       var ghost, ghost_dom, move, _i, _len, _ref, _results;
-      if (this.color !== game.player || !game.active) {
+      if (this.color !== this.game.player || !this.game.active) {
         return;
       }
       $('#pieces span').removeClass("selected");
@@ -233,7 +375,7 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         move = _ref[_i];
         ghost_dom = this.dom_object.clone().removeClass();
-        ghost = new this.constructor(ghost_dom, this.color, move, this);
+        ghost = new this.constructor(ghost_dom, this.game, this.color, move, this);
         ghost.draw();
         if (move.capture) {
           ghost_dom.text("").addClass("capture");
@@ -256,8 +398,11 @@
 
     Pawn.html_code = "&#9823";
 
-    Pawn.prototype.possible_moves = function() {
-      var capture_matrix, move_matrix, moves, pos, position, _i, _j, _len, _len1;
+    Pawn.prototype.possible_moves = function(filter_checks) {
+      var capture_matrix, move, move_matrix, moves, pos, position, _i, _j, _len, _len1;
+      if (filter_checks == null) {
+        filter_checks = true;
+      }
       moves = [];
       move_matrix = [[0, this.direction]];
       capture_matrix = [[-1, this.direction], [1, this.direction]];
@@ -277,7 +422,7 @@
             'capture': true
           };
         }
-        if (game.invalid(position) || game.piece(position)) {
+        if (this.game.invalid(position) || this.game.piece(position)) {
           break;
         }
         moves.push(position);
@@ -289,13 +434,26 @@
           y: this.y + pos[1],
           capture: true
         };
-        if (game.invalid(position)) {
+        if (this.game.invalid(position)) {
           continue;
         }
-        if (!(game.piece(position) && game.piece(position).color !== this.color)) {
+        if (!(this.game.piece(position) && this.game.piece(position).color !== this.color)) {
           continue;
         }
         moves.push(position);
+      }
+      if (filter_checks) {
+        moves = (function() {
+          var _k, _len2, _results;
+          _results = [];
+          for (_k = 0, _len2 = moves.length; _k < _len2; _k++) {
+            move = moves[_k];
+            if (!this.game.check_exists(this, move)) {
+              _results.push(move);
+            }
+          }
+          return _results;
+        }).call(this);
       }
       return moves;
     };
@@ -304,8 +462,8 @@
       if (this.y !== 3.5 + 3.5 * this.direction) {
         return;
       }
-      game.promote(this);
-      return game.active = false;
+      this.game.promote(this);
+      return this.game.active = false;
     };
 
     Pawn.prototype.promote = function(piece) {
@@ -313,13 +471,11 @@
       pawn = this;
       return this.dom_object.fadeOut(function() {
         var promoted;
-        game.remove(pawn);
+        this.game.remove(pawn);
         promoted = new piece(pawn.dom_object, pawn.color);
-        game.add(promoted);
-        console.log(promoted);
-        console.log(promoted.html());
+        this.game.add(promoted);
         promoted.dom_object.removeClass().addClass(promoted["class"]()).html(promoted.html()).fadeIn();
-        return game.active = true;
+        return this.game.active = true;
       });
     };
 
@@ -400,24 +556,27 @@
       _ref = [7, 0];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rook_x = _ref[_i];
-        rook = game.piece({
+        rook = this.game.piece({
           x: rook_x,
           y: this.y
         });
+        if (!rook) {
+          continue;
+        }
         range = rook_x === 7 ? [5, 6] : [1, 2, 3];
         obstacles = (function() {
           var _j, _len1, _results;
           _results = [];
           for (_j = 0, _len1 = range.length; _j < _len1; _j++) {
             x = range[_j];
-            if (game.piece({
+            if (this.game.piece({
               x: x,
               y: this.y
-            }) || game.under_attack({
+            }) || this.game.under_attack({
               x: x,
               y: this.y
             })) {
-              _results.push(game.piece({
+              _results.push(this.game.piece({
                 x: x,
                 y: this.y
               }));
@@ -457,7 +616,7 @@
 
   })(Piece);
 
-  game = new Chess;
+  game = null;
 
   pieces = {
     'pawn': Pawn,
@@ -468,32 +627,26 @@
     'king': King
   };
 
-  orientation = {
-    x: 55,
-    y: -7,
-    z: 21
-  };
-
-  current_orientation = {
+  orientation = current_orientation = {
     x: 0,
     y: 0,
     z: 0
   };
 
   $(function() {
-    var drag_start, game_dom;
-    game_dom = $("#game");
+    var drag_start;
+    game = new Chess($("#game"));
     if (!$("#possible_moves").length) {
-      game_dom.append("<div id=\"possible_moves\"></div>");
+      game.dom.append("<div id=\"possible_moves\"></div>");
     }
     $("#pieces span").each(function() {
       var piece;
-      piece = new pieces[$(this).attr("class")]($(this), $(this).parent().attr('id'));
+      piece = new pieces[$(this).attr("class")]($(this), game, $(this).parent().attr('id'));
       return game.add(piece);
     });
     game.start();
     drag_start = null;
-    game_dom.on("mousedown", function(e) {
+    game.dom.on("mousedown", function(e) {
       return drag_start = [e.pageX, e.pageY];
     });
     return $(document).on("mousemove", function(e) {
@@ -507,7 +660,12 @@
         'y': (orientation.y + offset[0]) % 360,
         'z': orientation.z
       };
-      return game_dom.css({
+      if (Math.abs(current_orientation.x) > 50 && Math.abs(current_orientation.x) < 310) {
+        $("#pieces span, #possible_moves").addClass("upright");
+      } else {
+        $("#pieces span, #possible_moves").removeClass("upright");
+      }
+      return game.dom.css({
         '-webkit-transform': 'rotateX(' + current_orientation.x + 'deg) rotateZ(' + current_orientation.z + 'deg) rotateY(' + current_orientation.y + 'deg)'
       });
     }).on("mouseup", function() {

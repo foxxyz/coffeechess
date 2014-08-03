@@ -72,16 +72,30 @@ h1 {
   width: 8em;
   height: 8em;
   margin: .5em auto;
-  border: solid 1em #000;
+  border: outset 1em #494949;
   position: relative;
   -webkit-transform-style: preserve-3d;
-  -webkit-transform: rotateX(54deg) rotateZ(21deg) rotateY(-6deg);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  #game.in_check {
+    border: double 1em #000; }
+    #game.in_check:after, #game.in_check:before {
+      content: 'Check';
+      color: #d35050;
+      text-transform: lowercase;
+      position: absolute;
+      font-variant: small-caps;
+      left: 0;
+      width: 8em;
+      text-align: center; }
+    #game.in_check:after {
+      top: -2em; }
+    #game.in_check:before {
+      bottom: -2em; }
 
 #pieces span, #possible_moves span {
   display: block;
@@ -93,6 +107,10 @@ h1 {
   top: 0;
   left: 0;
   cursor: pointer;
+  -webkit-transition: -webkit-transform .2s;
+  -webkit-transform: translateZ(0.06em); }
+
+#pieces span.upright, #possible_moves.upright span {
   -webkit-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em); }
 
 #pieces {
