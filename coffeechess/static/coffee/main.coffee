@@ -1,7 +1,45 @@
 em_value = 64
 
+
+class Player
+
+	constructor: (@game, @color) ->
+		@dom_object = $("#" + @color)
+
+	draw: ->
+		if @game.player.color == @color
+			@dom_object.addClass("active").siblings().removeClass("active")
+
+	make_move: ->
+
+class HumanPlayer extends Player
+
+	make_move: ->
+		
+
+
+class AIPlayer extends Player
+
+	auto_move: ->
+		pieces = @dom_object.children(':not(:animated)')
+		moves = $("#possible_moves")
+		# Select random piece
+		until moves.children().length
+			pieces.eq(Math.floor(Math.random() * pieces.length)).trigger('click')
+		# Select random possible move
+		moves = moves.children()
+		moves.eq(Math.floor(Math.random() * moves.length)).trigger('click')
+
+	make_move: ->
+		if @game.promotion
+			$("#promotion span").eq(Math.floor(Math.random() * 4)).trigger('click')
+		else
+			setTimeout =>
+				@auto_move()
+			, 500
+
+
 window.Chess = class Chess
-	@players = ['white', 'black']
 	
 	# Set up board	
 	constructor: (@dom, @board) ->
@@ -12,6 +50,7 @@ window.Chess = class Chess
 		@player = null
 		@in_check = false
 		@board = @set_up(@board)
+		@players = {'white': new AIPlayer(this, 'white'), 'black': new AIPlayer(this, 'black')}
 		
 	# Add piece to board
 	add: (piece) ->
@@ -19,6 +58,8 @@ window.Chess = class Chess
 
 	# Search for checks
 	check_exists: (with_piece, at_position) ->
+		in_check = []
+
 		# Switch out piece temporarily
 		if with_piece? and at_position?
 			piece_at_new_position = @board[at_position.x][at_position.y]
@@ -32,7 +73,7 @@ window.Chess = class Chess
 			for position in piece.possible_moves(false)
 				under_attack = @piece(position)
 				if under_attack instanceof King
-					in_check = under_attack.color
+					in_check.push(under_attack.color)
 
 		# Put piece back into current position
 		if with_piece? and at_position?
@@ -43,20 +84,22 @@ window.Chess = class Chess
 		in_check
 
 	draw: ->
-		$("#" + @player).addClass("active").siblings().removeClass("active")
-		if @in_check then game.dom.addClass("in_check") else game.dom.removeClass("in_check")
-		if @in_check and not @active then game.dom.addClass("mate")
+		for color, player of @players
+			player.draw()
+		if @in_check.length then game.dom.addClass("in_check") else game.dom.removeClass("in_check")
+		if @in_check.length and not @active then game.dom.addClass("mate")
 
 	invalid: (position) ->
 		position.x < 0 or position.y < 0 or position.x >= @board.length or position.y >= @board.length
 
 	next_turn: ->
-		@player = if @player == 'white' then 'black' else 'white'
+		@player = if @player and @player.color == 'white' then @players.black else @players.white
 		@in_check = @check_exists()
-		if @in_check
-			active_pieces = (piece for piece in @pieces() when piece.possible_moves().length > 0 and piece.color == @in_check)
+		if @in_check.length
+			active_pieces = (piece for piece in @pieces() when piece.possible_moves().length > 0 and piece.color in @in_check)
 			@active = active_pieces.length != 0
 		@draw()
+		@player.make_move()
 
 	# Get piece by position
 	piece: (position) ->
@@ -77,9 +120,10 @@ window.Chess = class Chess
 		$(".promotion").show()
 		$(".promotion span").on "click", ->
 			pawn.promote(pieces[$(this).attr("class")])
-			$(this).parent().fadeOut()
+			$(this).parent().fadeOut(-> @remove())
 
 	record: (piece, new_position) ->
+		console.log(piece.class() + " from " + piece.x + "," + piece.y + " to " + new_position.x + "," + new_position.y)
 		@moves.push [piece, {x: piece.x, y: piece.y}, new_position]
 
 	# Remove piece from board
@@ -112,7 +156,7 @@ window.Chess = class Chess
 			color = if char.charCodeAt() < 90 then "black" else "white"
 			board[x][y] = new piece($(""), this, color, {"x": x, "y": y})
 			x += 1
-		@player = if player == "w" then "white" else "black"
+		@player = if player == "w" then @players.white else @players.black
 		board
 
 	start: ->
@@ -173,7 +217,7 @@ class Piece
 		[@x, @y] = [position.x, position.y]	
 		if position.capture
 			captured = @game.piece(position)
-			captured.dom_object.fadeOut()
+			captured.dom_object.fadeOut(-> @remove())
 			@game.remove(captured)
 		if position.castle
 			rook_position = {x: 4 + ((4 - position.x) / -2), y: position.y}
@@ -203,14 +247,14 @@ class Piece
 
 		# Ignore moves that would keep the game in check
 		if filter_checks
-			moves = (move for move in moves when @game.check_exists(this, move) != @color)
+			moves = (move for move in moves when @color not in @game.check_exists(this, move))
 			
 		moves
 
 	post_move: ->
 
 	select: ->
-		return if @color != @game.player or not @game.active
+		return if @color != @game.player.color or not @game.active
 		$('#pieces span').removeClass "selected"
 		@dom_object.addClass "selected"
 		$("#possible_moves").empty()
@@ -245,7 +289,7 @@ class Pawn extends Piece
 
 		# Ignore moves that would keep the game in check
 		if filter_checks
-			moves = (move for move in moves when not @game.check_exists(this, move))
+			moves = (move for move in moves when @color not in @game.check_exists(this, move))
 
 		moves
 
@@ -257,10 +301,9 @@ class Pawn extends Piece
 		@game.active = false
 
 	promote: (piece) ->
-		pawn = this
-		@dom_object.fadeOut ->
-			@game.remove(pawn)
-			promoted = new piece(pawn.dom_object, pawn.color)
+		@dom_object.fadeOut =>
+			@game.remove(this)
+			promoted = new piece(@dom_object, @game, @color)
 			@game.add(promoted)
 			promoted.dom_object.removeClass().addClass(promoted.class()).html(promoted.html()).fadeIn()
 			@game.active = true
