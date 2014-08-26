@@ -15,7 +15,7 @@ class Player
 class HumanPlayer extends Player
 
 	make_move: ->
-		
+
 
 
 class AIPlayer extends Player
@@ -31,6 +31,8 @@ class AIPlayer extends Player
 		moves.eq(Math.floor(Math.random() * moves.length)).trigger('click')
 
 	make_move: ->
+		if not @game.active
+			return
 		if @game.promotion
 			$("#promotion span").eq(Math.floor(Math.random() * 4)).trigger('click')
 		else
@@ -40,8 +42,8 @@ class AIPlayer extends Player
 
 
 window.Chess = class Chess
-	
-	# Set up board	
+
+	# Set up board
 	constructor: (@dom, @board) ->
 		@moves = []
 		@en_passant = false
@@ -49,9 +51,10 @@ window.Chess = class Chess
 		@active = false
 		@player = null
 		@in_check = false
+		@in_draw = false
 		@board = @set_up(@board)
-		@players = {'white': new AIPlayer(this, 'white'), 'black': new AIPlayer(this, 'black')}
-		
+		@players = {'white': new AIPlayer(this, 'white'), 'black': new HumanPlayer(this, 'black')}
+
 	# Add piece to board
 	add: (piece) ->
 		@board[piece.x][piece.y] = piece
@@ -83,11 +86,17 @@ window.Chess = class Chess
 
 		in_check
 
+	# Search for draw conditions
+	draw_exists: ->
+		active_pieces = (piece for piece in @pieces() when piece.possible_moves().length > 0 and piece.color == @player.color)
+		return active_pieces < 1
+
 	draw: ->
 		for color, player of @players
 			player.draw()
 		if @in_check.length then game.dom.addClass("in_check") else game.dom.removeClass("in_check")
 		if @in_check.length and not @active then game.dom.addClass("mate")
+		if @in_draw then game.dom.addClass('draw')
 
 	invalid: (position) ->
 		position.x < 0 or position.y < 0 or position.x >= @board.length or position.y >= @board.length
@@ -95,9 +104,12 @@ window.Chess = class Chess
 	next_turn: ->
 		@player = if @player and @player.color == 'white' then @players.black else @players.white
 		@in_check = @check_exists()
+		@in_draw = @draw_exists()
 		if @in_check.length
 			active_pieces = (piece for piece in @pieces() when piece.possible_moves().length > 0 and piece.color in @in_check)
 			@active = active_pieces.length != 0
+		else if @in_draw
+			@active = false
 		@draw()
 		@player.make_move()
 
@@ -214,7 +226,7 @@ class Piece
 	move: (position) ->
 		@game.remove(this)
 		@game.record(this, position)
-		[@x, @y] = [position.x, position.y]	
+		[@x, @y] = [position.x, position.y]
 		if position.capture
 			captured = @game.piece(position)
 			captured.dom_object.fadeOut(-> @remove())
@@ -237,7 +249,7 @@ class Piece
 		for pos in @constructor.move_matrix
 			for n in [1..@constructor.range]
 				position = {x: @x + pos[0] * n, y: @y + pos[1] * n}
-				break if @game.invalid(position) 
+				break if @game.invalid(position)
 				if @game.piece(position)
 					if @game.piece(position).color != @color
 						position.capture = true
@@ -248,7 +260,7 @@ class Piece
 		# Ignore moves that would keep the game in check
 		if filter_checks
 			moves = (move for move in moves when @color not in @game.check_exists(this, move))
-			
+
 		moves
 
 	post_move: ->

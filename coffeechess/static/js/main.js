@@ -58,6 +58,9 @@
     };
 
     AIPlayer.prototype.make_move = function() {
+      if (!this.game.active) {
+        return;
+      }
       if (this.game.promotion) {
         return $("#promotion span").eq(Math.floor(Math.random() * 4)).trigger('click');
       } else {
@@ -83,10 +86,11 @@
       this.active = false;
       this.player = null;
       this.in_check = false;
+      this.in_draw = false;
       this.board = this.set_up(this.board);
       this.players = {
         'white': new AIPlayer(this, 'white'),
-        'black': new AIPlayer(this, 'black')
+        'black': new HumanPlayer(this, 'black')
       };
     }
 
@@ -127,6 +131,23 @@
       return in_check;
     };
 
+    Chess.prototype.draw_exists = function() {
+      var active_pieces, piece;
+      active_pieces = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.pieces();
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          piece = _ref[_i];
+          if (piece.possible_moves().length > 0 && piece.color === this.player.color) {
+            _results.push(piece);
+          }
+        }
+        return _results;
+      }).call(this);
+      return active_pieces < 1;
+    };
+
     Chess.prototype.draw = function() {
       var color, player, _ref;
       _ref = this.players;
@@ -140,7 +161,10 @@
         game.dom.removeClass("in_check");
       }
       if (this.in_check.length && !this.active) {
-        return game.dom.addClass("mate");
+        game.dom.addClass("mate");
+      }
+      if (this.in_draw) {
+        return game.dom.addClass('draw');
       }
     };
 
@@ -152,6 +176,7 @@
       var active_pieces, piece;
       this.player = this.player && this.player.color === 'white' ? this.players.black : this.players.white;
       this.in_check = this.check_exists();
+      this.in_draw = this.draw_exists();
       if (this.in_check.length) {
         active_pieces = (function() {
           var _i, _len, _ref, _ref1, _results;
@@ -166,6 +191,8 @@
           return _results;
         }).call(this);
         this.active = active_pieces.length !== 0;
+      } else if (this.in_draw) {
+        this.active = false;
       }
       this.draw();
       return this.player.make_move();

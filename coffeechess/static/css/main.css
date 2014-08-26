@@ -59,7 +59,8 @@ h1 {
   height: 1em;
   float: left;
   background-color: #96631A;
-  color: inherit; }
+  color: inherit;
+  -webkit-transition: -webkit-transform 120s; }
   #board div:nth-child(9n - 8), #board div:nth-child(9n - 6), #board div:nth-child(9n - 4), #board div:nth-child(9n - 2), #board div:nth-child(9n + 17), #board div:nth-child(9n + 33), #board div:nth-child(9n + 49) {
     background-color: #F19C23;
     color: inherit; }
@@ -81,6 +82,17 @@ h1 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  #game.draw {
+    border: double 1em #888; }
+    #game.draw:after, #game.draw:before {
+      content: 'Draw';
+      color: #d35050;
+      text-transform: lowercase;
+      position: absolute;
+      font-variant: small-caps;
+      left: 0;
+      width: 8em;
+      text-align: center; }
   #game.in_check {
     border: double 1em #000; }
     #game.in_check:after, #game.in_check:before {
@@ -96,6 +108,22 @@ h1 {
       top: -2em; }
     #game.in_check:before {
       bottom: -2em; }
+    #game.in_check.mate:after, #game.in_check.mate:before {
+      content: "-Checkmate-"; }
+    #game.in_check.mate #board div:nth-child(7n) {
+      -webkit-transform: translateZ(-10em); }
+    #game.in_check.mate #board div:nth-child(7n+1) {
+      -webkit-transform: translateZ(-25em); }
+    #game.in_check.mate #board div:nth-child(7n+2) {
+      -webkit-transform: translateZ(-7em); }
+    #game.in_check.mate #board div:nth-child(7n+3) {
+      -webkit-transform: translateZ(-19em); }
+    #game.in_check.mate #board div:nth-child(7n+4) {
+      -webkit-transform: translateZ(-34em); }
+    #game.in_check.mate #board div:nth-child(7n+5) {
+      -webkit-transform: translateZ(-47em); }
+    #game.in_check.mate #board div:nth-child(7n+6) {
+      -webkit-transform: translateZ(-14em); }
 
 #pieces span, #possible_moves span {
   display: block;
