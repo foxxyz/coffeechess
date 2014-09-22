@@ -1,41 +1,30 @@
+@import url(http://fonts.googleapis.com/css?family=Italianno);
 /*
-Coffee CheSS Stylesheet
-
-Author: Ivo Janssen (foxxyz)
-http://codedealers.com
-*/
-/*******************************
-
-	GENERAL STYLES
-
-*******************************/
+ * Coffee CheSS Stylesheet
+ *
+ * Author: Ivo Janssen (foxxyz)
+ * http://codedealers.com */
+/* line 9, ../sass/main.scss */
 * {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
+/* line 14, ../sass/main.scss */
 body {
   background: #fff;
   color: #000;
   font-family: Arial, sans-serif;
-  -webkit-perspective: 600px; }
+}
 
+/* line 20, ../sass/main.scss */
 h1 {
-  text-align: center;
-  font-variant: small-caps;
-  color: #91A0C1;
-  margin: 1em auto 0;
-  letter-spacing: .2em;
-  width: 20em;
-  border-radius: .4em;
-  -moz-border-radius: .4em;
-  -webkit-border-radius: .4em;
-  padding: .3em 0; }
-  h1.checked {
-    background-color: #f00;
-    color: #fff; }
+  font-size: 3em;
+}
 
+/* line 24, ../sass/main.scss */
 .promotion {
-  background-color: #03CD0D;
+  background-color: #5f5f5f;
   color: #fff;
   top: 50%;
   position: fixed;
@@ -44,30 +33,97 @@ h1 {
   width: 50%;
   height: 100px;
   margin-top: -50px;
+  padding: 1em 0;
   z-index: 10;
   opacity: .9;
   text-align: center;
-  display: none; }
-  .promotion span {
-    font-size: 3em; }
-    .promotion span:hover {
-      cursor: pointer;
-      text-shadow: #fff 0px 0px 10px; }
+  display: none;
+}
+/* line 39, ../sass/main.scss */
+.promotion span {
+  font-size: 3em;
+}
+/* line 41, ../sass/main.scss */
+.promotion span:hover {
+  cursor: pointer;
+  text-shadow: white 0px 0px 10px;
+}
 
+/* line 48, ../sass/main.scss */
+#menu {
+  font-family: Italianno, sans-serif;
+  top: 5%;
+  position: fixed;
+  left: 50%;
+  margin-left: -25%;
+  width: 50%;
+  z-index: 10;
+  opacity: .9;
+  text-align: center;
+  opacity: 0;
+  -moz-transition: opacity 3s;
+  -o-transition: opacity 3s;
+  -webkit-transition: opacity 3s;
+  transition: opacity 3s;
+}
+/* line 60, ../sass/main.scss */
+#menu.active {
+  opacity: 1;
+}
+/* line 63, ../sass/main.scss */
+#menu span {
+  background-color: #5f5f5f;
+  color: #fff;
+  font-size: 1.5em;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+  border-radius: 0.4em;
+  -moz-box-shadow: 0 3px 4px black;
+  -webkit-box-shadow: 0 3px 4px black;
+  box-shadow: 0 3px 4px black;
+  width: 120px;
+  height: 1em;
+  margin: 0 auto;
+  display: block;
+  cursor: pointer;
+  padding: .2em 0 .3em;
+}
+/* line 75, ../sass/main.scss */
+#menu span:hover {
+  background-color: #999;
+}
+
+/* line 81, ../sass/main.scss */
+#perspectivewrapper {
+  -moz-perspective: 600px;
+  -webkit-perspective: 600px;
+  perspective: 600px;
+}
+
+/* line 85, ../sass/main.scss */
 #board div {
   width: 1em;
   height: 1em;
   float: left;
   background-color: #96631A;
   color: inherit;
-  -webkit-transition: -webkit-transform 120s; }
-  #board div:nth-child(9n - 8), #board div:nth-child(9n - 6), #board div:nth-child(9n - 4), #board div:nth-child(9n - 2), #board div:nth-child(9n + 17), #board div:nth-child(9n + 33), #board div:nth-child(9n + 49) {
-    background-color: #F19C23;
-    color: inherit; }
-  #board div:nth-child(9n + 25), #board div:nth-child(9n + 41), #board div:nth-child(9n + 57) {
-    background-color: #96631A;
-    color: inherit; }
+  -moz-transition: -moz-transform 120s;
+  -o-transition: -o-transform 120s;
+  -webkit-transition: -webkit-transform 120s;
+  transition: transform 120s;
+}
+/* line 91, ../sass/main.scss */
+#board div:nth-child(9n - 8), #board div:nth-child(9n - 6), #board div:nth-child(9n - 4), #board div:nth-child(9n - 2), #board div:nth-child(9n + 17), #board div:nth-child(9n + 33), #board div:nth-child(9n + 49) {
+  background-color: #F19C23;
+  color: inherit;
+}
+/* line 95, ../sass/main.scss */
+#board div:nth-child(9n + 25), #board div:nth-child(9n + 41), #board div:nth-child(9n + 57) {
+  background-color: #96631A;
+  color: inherit;
+}
 
+/* line 102, ../sass/main.scss */
 #game {
   font-size: 4em;
   width: 8em;
@@ -75,56 +131,120 @@ h1 {
   margin: .5em auto;
   border: outset 1em #494949;
   position: relative;
+  -moz-transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
+  transform-style: preserve-3d;
+  -moz-user-select: -moz-none;
   -ms-user-select: none;
-  user-select: none; }
-  #game.draw {
-    border: double 1em #888; }
-    #game.draw:after, #game.draw:before {
-      content: 'Draw';
-      color: #d35050;
-      text-transform: lowercase;
-      position: absolute;
-      font-variant: small-caps;
-      left: 0;
-      width: 8em;
-      text-align: center; }
-  #game.in_check {
-    border: double 1em #000; }
-    #game.in_check:after, #game.in_check:before {
-      content: 'Check';
-      color: #d35050;
-      text-transform: lowercase;
-      position: absolute;
-      font-variant: small-caps;
-      left: 0;
-      width: 8em;
-      text-align: center; }
-    #game.in_check:after {
-      top: -2em; }
-    #game.in_check:before {
-      bottom: -2em; }
-    #game.in_check.mate:after, #game.in_check.mate:before {
-      content: "-Checkmate-"; }
-    #game.in_check.mate #board div:nth-child(7n) {
-      -webkit-transform: translateZ(-10em); }
-    #game.in_check.mate #board div:nth-child(7n+1) {
-      -webkit-transform: translateZ(-25em); }
-    #game.in_check.mate #board div:nth-child(7n+2) {
-      -webkit-transform: translateZ(-7em); }
-    #game.in_check.mate #board div:nth-child(7n+3) {
-      -webkit-transform: translateZ(-19em); }
-    #game.in_check.mate #board div:nth-child(7n+4) {
-      -webkit-transform: translateZ(-34em); }
-    #game.in_check.mate #board div:nth-child(7n+5) {
-      -webkit-transform: translateZ(-47em); }
-    #game.in_check.mate #board div:nth-child(7n+6) {
-      -webkit-transform: translateZ(-14em); }
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* line 112, ../sass/main.scss */
+#game.draw {
+  border: double 1em #888;
+}
+/* line 115, ../sass/main.scss */
+#game.draw:after, #game.draw:before {
+  content: 'Draw';
+  font-family: Italianno, sans-serif;
+  color: #d35050;
+  position: absolute;
+  left: 2em;
+  width: 4em;
+  text-align: center;
+}
+/* line 125, ../sass/main.scss */
+#game.draw:after {
+  top: -2.5em;
+}
+/* line 129, ../sass/main.scss */
+#game.draw:before {
+  bottom: -2.5em;
+}
+/* line 134, ../sass/main.scss */
+#game.in_check {
+  border: double 1em #000;
+}
+/* line 137, ../sass/main.scss */
+#game.in_check:after, #game.in_check:before {
+  content: 'Check';
+  font-family: Italianno, sans-serif;
+  color: #d35050;
+  position: absolute;
+  left: 2em;
+  width: 4em;
+  text-align: center;
+}
+/* line 147, ../sass/main.scss */
+#game.in_check:after {
+  top: -2.5em;
+}
+/* line 151, ../sass/main.scss */
+#game.in_check:before {
+  bottom: -2.5em;
+}
+/* line 156, ../sass/main.scss */
+#game.in_check.mate:after, #game.in_check.mate:before {
+  content: "-Checkmate-";
+}
+/* line 160, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n) {
+  -moz-transform: translateZ(-10em);
+  -ms-transform: translateZ(-10em);
+  -o-transform: translateZ(-10em);
+  -webkit-transform: translateZ(-10em);
+  transform: translateZ(-10em);
+}
+/* line 163, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+1) {
+  -moz-transform: translateZ(-25em);
+  -ms-transform: translateZ(-25em);
+  -o-transform: translateZ(-25em);
+  -webkit-transform: translateZ(-25em);
+  transform: translateZ(-25em);
+}
+/* line 166, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+2) {
+  -moz-transform: translateZ(-7em);
+  -ms-transform: translateZ(-7em);
+  -o-transform: translateZ(-7em);
+  -webkit-transform: translateZ(-7em);
+  transform: translateZ(-7em);
+}
+/* line 169, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+3) {
+  -moz-transform: translateZ(-19em);
+  -ms-transform: translateZ(-19em);
+  -o-transform: translateZ(-19em);
+  -webkit-transform: translateZ(-19em);
+  transform: translateZ(-19em);
+}
+/* line 172, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+4) {
+  -moz-transform: translateZ(-34em);
+  -ms-transform: translateZ(-34em);
+  -o-transform: translateZ(-34em);
+  -webkit-transform: translateZ(-34em);
+  transform: translateZ(-34em);
+}
+/* line 175, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+5) {
+  -moz-transform: translateZ(-47em);
+  -ms-transform: translateZ(-47em);
+  -o-transform: translateZ(-47em);
+  -webkit-transform: translateZ(-47em);
+  transform: translateZ(-47em);
+}
+/* line 178, ../sass/main.scss */
+#game.in_check.mate #board div:nth-child(7n+6) {
+  -moz-transform: translateZ(-14em);
+  -ms-transform: translateZ(-14em);
+  -o-transform: translateZ(-14em);
+  -webkit-transform: translateZ(-14em);
+  transform: translateZ(-14em);
+}
 
+/* line 186, ../sass/main.scss */
 #pieces span, #possible_moves span {
   display: block;
   width: 1em;
@@ -135,66 +255,128 @@ h1 {
   top: 0;
   left: 0;
   cursor: pointer;
-  -webkit-transition: -webkit-transform .2s;
-  -webkit-transform: translateZ(0.06em); }
+  -moz-transition: -moz-transform 0.2s;
+  -o-transition: -o-transform 0.2s;
+  -webkit-transition: -webkit-transform 0.2s;
+  transition: transform 0.2s;
+  -moz-transform: translateZ(0.06em);
+  -ms-transform: translateZ(0.06em);
+  -o-transform: translateZ(0.06em);
+  -webkit-transform: translateZ(0.06em);
+  transform: translateZ(0.06em);
+}
 
+/* line 200, ../sass/main.scss */
 #pieces span.upright, #possible_moves.upright span {
-  -webkit-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em); }
+  -moz-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
+  -ms-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
+  -o-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
+  -webkit-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
+  transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
+}
 
-#pieces {
-  /* disclaimer: this is bad. */ }
-  #pieces .active span:hover {
-    text-shadow: #fff 0px 0px 20px; }
-  #pieces #black {
-    color: #000;
-    background-color: inherit;
-    text-shadow: 0 0 3px #fff; }
-  #pieces #white {
-    color: #fff;
-    background-color: inherit; }
-    #pieces #white span {
-      top: 7em; }
-    #pieces #white .pawn {
-      top: 6em; }
-  #pieces .bishop {
-    left: 2em; }
-    #pieces .bishop + .bishop {
-      left: 5em; }
-  #pieces .king {
-    left: 4em; }
-  #pieces .knight {
-    left: 1em; }
-    #pieces .knight + .knight {
-      left: 6em; }
-  #pieces .pawn {
-    top: 1em; }
-    #pieces .pawn + .pawn {
-      left: 1em; }
-      #pieces .pawn + .pawn + .pawn {
-        left: 2em; }
-        #pieces .pawn + .pawn + .pawn + .pawn {
-          left: 3em; }
-          #pieces .pawn + .pawn + .pawn + .pawn + .pawn {
-            left: 4em; }
-            #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
-              left: 5em; }
-              #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
-                left: 6em; }
-                #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
-                  left: 7em; }
-  #pieces .queen {
-    left: 3em; }
-  #pieces .rook + .rook {
-    left: 7em; }
-  #pieces .selected {
-    text-shadow: #fff 0px 0px 20px; }
+/* line 205, ../sass/main.scss */
+#pieces .active span:hover {
+  text-shadow: #fff 0px 0px 20px;
+}
+/* line 208, ../sass/main.scss */
+#pieces #black {
+  color: #000;
+  background-color: inherit;
+  text-shadow: 0 0 3px #fff;
+}
+/* line 213, ../sass/main.scss */
+#pieces #white {
+  color: #fff;
+  background-color: inherit;
+}
+/* line 216, ../sass/main.scss */
+#pieces #white span {
+  top: 7em;
+}
+/* line 219, ../sass/main.scss */
+#pieces #white .pawn {
+  top: 6em;
+}
+/* line 223, ../sass/main.scss */
+#pieces .bishop {
+  left: 2em;
+}
+/* line 225, ../sass/main.scss */
+#pieces .bishop + .bishop {
+  left: 5em;
+}
+/* line 229, ../sass/main.scss */
+#pieces .king {
+  left: 4em;
+}
+/* line 232, ../sass/main.scss */
+#pieces .knight {
+  left: 1em;
+}
+/* line 234, ../sass/main.scss */
+#pieces .knight + .knight {
+  left: 6em;
+}
+/* line 239, ../sass/main.scss */
+#pieces .pawn {
+  top: 1em;
+}
+/* line 241, ../sass/main.scss */
+#pieces .pawn + .pawn {
+  left: 1em;
+}
+/* line 243, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn {
+  left: 2em;
+}
+/* line 245, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn + .pawn {
+  left: 3em;
+}
+/* line 247, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn + .pawn + .pawn {
+  left: 4em;
+}
+/* line 249, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+  left: 5em;
+}
+/* line 251, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+  left: 6em;
+}
+/* line 253, ../sass/main.scss */
+#pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
+  left: 7em;
+}
+/* line 263, ../sass/main.scss */
+#pieces .queen {
+  left: 3em;
+}
+/* line 266, ../sass/main.scss */
+#pieces .rook + .rook {
+  left: 7em;
+}
+/* line 269, ../sass/main.scss */
+#pieces .selected {
+  text-shadow: white 0px 0px 20px;
+}
 
+/* line 275, ../sass/main.scss */
 #possible_moves span {
-  opacity: .1; }
-  #possible_moves span:hover {
-    opacity: .3; }
+  opacity: .1;
+}
+/* line 277, ../sass/main.scss */
+#possible_moves span:hover {
+  opacity: .3;
+}
+/* line 281, ../sass/main.scss */
 #possible_moves .capture {
   background-color: #f00;
-  opacity: .3; }
-  #possible_moves .capture:hover {
-    opacity: .5; }
+  opacity: .3;
+}
+/* line 284, ../sass/main.scss */
+#possible_moves .capture:hover {
+  opacity: .5;
+}

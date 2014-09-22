@@ -8,29 +8,35 @@
 		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 	</head>
 	<body>
+		<div id="perspectivewrapper">
+			<div id="game">
+				<div id="board">
+					{% for y in range(8, 0, -1) %}
+						{% for x in "abcdefgh" %}
+							<div id="{{ x }}{{ y }}"></div>
+						{% endfor %}
+					{% endfor %}
+				</div>
+				<div id="pieces">
+					{% for player in ['black', 'white'] %}
+						<div id="{{ player }}">
+							{% for piece, html_code in pieces %}
+								<span class="{{ piece }}">&#{{ html_code }};</span>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
 		<div class="promotion">
-			<h2>Select your upgrade:</h2>
+			<h2>Select your promotion:</h2>
 			{% for piece, html_code in promotion_pieces %}
 				<span class="{{ piece }}">&#{{ html_code }};</span>
 			{% endfor %}
 		</div>
-		<div id="game">
-			<div id="board">
-				{% for y in range(8, 0, -1) %}
-					{% for x in "abcdefgh" %}
-						<div id="{{ x }}{{ y }}"></div>
-					{% endfor %}
-				{% endfor %}
-			</div>
-			<div id="pieces">
-				{% for player in ['black', 'white'] %}
-					<div id="{{ player }}">
-						{% for piece, html_code in pieces %}
-							<span class="{{ piece }}">&#{{ html_code }};</span>
-						{% endfor %}
-					</div>
-				{% endfor %}
-			</div>
+		<div id="menu">
+			<h1>Coffee &amp; Chess</h1>
+			<span class="start">Start Game</span>
 		</div>
 	</body>
 </html>
