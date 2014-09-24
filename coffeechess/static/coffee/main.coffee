@@ -1,5 +1,8 @@
+# Globals
+# Em value in pixels
 em_value = 64
-
+# Global game var
+game = null
 
 class Player
 
@@ -24,23 +27,24 @@ class AIPlayer extends Player
 		pieces = @dom_object.children(':not(:animated)')
 		moves = $("#possible_moves")
 		# Select random piece
-		until moves.children().length
+		# Check for game.active to prevent a possible race condition
+		until moves.children().length or not @game.active
 			pieces.eq(Math.floor(Math.random() * pieces.length)).trigger('click')
 		# Select random possible move
 		moves = moves.children()
+		# Check for game.active again for possible race condition
+		if not moves.length or not @game.active
+			return
 		moves.eq(Math.floor(Math.random() * moves.length)).trigger('click')
 
 	make_move: ->
 		# Select promotion option
 		if @game.promotion
 			$(".promotion span").eq(Math.floor(Math.random() * 4)).trigger('click')
-		if not @game.active
-			return
-		else
-			# Actually make move
-			setTimeout =>
-				@auto_move()
-			, 1000
+		# Actually make move
+		setTimeout =>
+			@auto_move()
+		, 1000
 
 
 window.Chess = class Chess
@@ -64,8 +68,14 @@ window.Chess = class Chess
 	add: (piece) ->
 		@board[piece.x][piece.y] = piece
 
+	# Coupled to CSS transitions to simplify the code
 	animate: (x, y, z) ->
-		@dom.css('-webkit-transform', 'rotateX(' + x + 'deg) rotateY(' + y + 'deg) rotateZ(' + z + 'deg)')
+		@dom.addClass('transition')
+		setTimeout =>
+			@dom.removeClass('transition')
+		, 2000
+		@orientation = {x: x, y: y, z: z}
+		@draw()
 
 	# Search for checks
 	check_exists: (with_piece, at_position) ->
@@ -112,9 +122,13 @@ window.Chess = class Chess
 		for color, player of @players
 			player.draw()
 		if @in_check.length then @dom.addClass("in_check") else @dom.removeClass("in_check")
-		if @in_check.length and not @active then @dom.addClass("mate")
-		if @in_draw then @dom.addClass('draw')
-		@dom.css({'-webkit-transform': 'rotateX(' + @orientation.x + 'deg) rotateZ(' + @orientation.z + 'deg) rotateY(' + @orientation.y + 'deg)'})
+		if @in_check.length and not @active then @dom.addClass("mate") else @dom.removeClass("mate")
+		if @in_draw then @dom.addClass('draw') else @dom.removeClass("draw")
+		@dom.css({
+			'-webkit-transform': 'rotateX(' + @orientation.x + 'deg) rotateZ(' + @orientation.z + 'deg) rotateY(' + @orientation.y + 'deg)',
+			'-moz-transform': 'rotateX(' + @orientation.x + 'deg) rotateZ(' + @orientation.z + 'deg) rotateY(' + @orientation.y + 'deg)',
+			'transform': 'rotateX(' + @orientation.x + 'deg) rotateZ(' + @orientation.z + 'deg) rotateY(' + @orientation.y + 'deg)',
+		})
 		# Set pieces upright in certain orientations
 		if Math.abs(@orientation.x) > 50 and Math.abs(@orientation.x) < 310 then $("#pieces span, #possible_moves").addClass("upright") else $("#pieces span, #possible_moves").removeClass("upright")
 
@@ -153,11 +167,12 @@ window.Chess = class Chess
 
 	promote: (pawn) ->
 		$(".promotion").show()
-		$(".promotion span").on "click", ->
+		$(".promotion span").on "click", (e) ->
 			# Fade out promotion window and remove events from spans
 			$(this).parent().fadeOut().find("span").off()
 			pawn.promote(pieces[$(this).attr("class")])
 		@promotion = true
+		@player.make_move()
 
 	record: (piece, new_position) ->
 		console.log(piece.class() + " from " + piece.x + "," + piece.y + " to " + new_position.x + "," + new_position.y)
@@ -173,8 +188,8 @@ window.Chess = class Chess
 				null
 		if not fen_string?
 			board
-		$('#pieces #white').empty()
-		$('#pieces #black').empty()
+		$('#pieces #white span').off().parent().empty()
+		$('#pieces #black span').off().parent().empty()
 		[board_string, player] = fen_string.split " "
 		[x, y] = [0, 0]
 		for char in board_string
@@ -252,7 +267,10 @@ class Piece
 
 	make_move: (position) ->
 		@move(position)
-		@deselect()
+		@post_move()
+		@game.draw()
+		if not @game.promotion
+			@deselect()
 
 	move: (position) ->
 		@game.remove(this)
@@ -269,8 +287,6 @@ class Piece
 		@game.add(this)
 		@touched = true
 		@draw(true)
-		@post_move()
-		@game.draw()
 
 	position: ->
 		return {x: @x, y: @y}
@@ -351,7 +367,7 @@ class Pawn extends Piece
 			promoted.dom_object.removeClass().addClass(promoted.class()).html(promoted.html()).fadeIn =>
 				@game.active = true
 				@game.promotion = false
-				@game.end_turn()
+				@deselect()
 
 class Bishop extends Piece
 	@move_matrix = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -397,51 +413,51 @@ class Queen extends Piece
 	@html_code = "&#9819"
 
 
-game = null
+# Piece class library
 pieces = {'pawn': Pawn, 'bishop': Bishop, 'knight': Knight, 'rook': Rook, 'queen': Queen, 'king': King}
 
+# Drag control for 3D rotation
+enableDrag = () ->
+	drag_start = null
+	orientation = null
+	current_orientation = null
+	game.dom.on "mousedown", (e) ->
+		drag_start = [e.pageX, e.pageY]
+		orientation = game.orientation
+
+	$(document).on "mousemove", (e) ->
+		return if not drag_start
+		offset = [e.pageX - drag_start[0], e.pageY - drag_start[1]]
+		game.orientation = {'x': (orientation.x - offset[1]) % 360, 'y': (orientation.y + offset[0]) % 360, 'z': orientation.z}
+		game.draw()
+
+	.on "mouseup", ->
+		drag_start = null
+
+# Main
 $ ->
 
-	game = new Chess($("#game"), {'white': AIPlayer, 'black': AIPlayer})
-
-	# Add some space for possible moves
-	game.dom.append "<div id=\"possible_moves\"></div>" unless $("#possible_moves").length
-
-	# Initialize the pieces
-	# $("#pieces span").each ->
-	# 	piece = new pieces[$(this).attr "class"]($(this), game, $(this).parent().attr('id'))
-	# 	game.add(piece)
-
-	# Start game
-	game.start()
-
-	# 3D Rotation
-	# drag_start = null
-	# game.dom.on "mousedown", (e) ->
-	# 	drag_start = [e.pageX, e.pageY]
-
-	# $(document).on "mousemove", (e) ->
-	# 	return if not drag_start
-	# 	offset = [e.pageX - drag_start[0], e.pageY - drag_start[1]]
-	# 	current_orientation = {'x': (orientation.x - offset[1]) % 360, 'y': (orientation.y + offset[0]) % 360, 'z': orientation.z}
-	# 	game.dom.css({'-webkit-transform': 'rotateX(' + current_orientation.x + 'deg) rotateZ(' + current_orientation.z + 'deg) rotateY(' + current_orientation.y + 'deg)'})
-
-	# .on "mouseup", ->
-	# 	drag_start = null
-	# 	orientation = current_orientation
-
-	$('#menu .start').on "click", ->
-		$(this).parent().removeClass 'active'
-		clearInterval(intro)
-		game = new Chess($("#game"), {'white': HumanPlayer, 'black': AIPlayer})
-		game.animate 0, 0, 0
-		game.start()
-
-	# Start intro animation
+	# Intro animation
+	game = new Chess($("#game"), {"white": AIPlayer, "black": AIPlayer})
 	game.orientation.z = 180
 	intro = setInterval =>
-		game.orientation.z += .4
+		game.orientation.z = game.orientation.z % 360 + .4
 		if game.orientation.x < 60 then game.orientation.x += .1
-		if game.orientation.x > 20 then $('#menu').addClass 'active'
+		if game.orientation.x > 20 and not $("#menu").hasClass("active") then $("#menu").addClass "active transition"
 		game.draw()
 	, 30
+	game.start()
+
+	# Skip intro
+	$(document).on "click", (e) ->
+		if e.originalEvent then $('#menu').addClass("active").removeClass("transition")
+
+	# Start button interaction
+	$("#menu .start").on "click", ->
+		$(this).parent().removeClass("transition").fadeOut()
+		clearInterval(intro)
+		game.active = false
+		game = new Chess($("#game"), {"white": HumanPlayer, "black": AIPlayer})
+		game.animate 0, 0, 0
+		game.start()
+		enableDrag()
