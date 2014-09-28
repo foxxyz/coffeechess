@@ -1,29 +1,31 @@
 @import url(http://fonts.googleapis.com/css?family=Italianno);
 /*
- * Coffee CheSS Stylesheet
+ * Coffee & Chess Stylesheet
  *
  * Author: Ivo Janssen (foxxyz)
- * http://codedealers.com */
-/* line 9, ../sass/main.scss */
+ * http://github.com/foxxyz/coffeechess
+ * Demo: http://playchess.once.today
+ */
+/* line 11, ../sass/main.scss */
 * {
   margin: 0;
   padding: 0;
 }
 
-/* line 14, ../sass/main.scss */
+/* line 16, ../sass/main.scss */
 body {
   background: #fff;
   color: #000;
   font-family: Arial, sans-serif;
 }
 
-/* line 20, ../sass/main.scss */
+/* line 22, ../sass/main.scss */
 h1 {
   font-size: 3em;
   text-shadow: 0 0 5px white;
 }
 
-/* line 25, ../sass/main.scss */
+/* line 27, ../sass/main.scss */
 .promotion {
   background-color: #5f5f5f;
   color: #fff;
@@ -40,17 +42,17 @@ h1 {
   text-align: center;
   display: none;
 }
-/* line 40, ../sass/main.scss */
+/* line 42, ../sass/main.scss */
 .promotion span {
   font-size: 3em;
 }
-/* line 42, ../sass/main.scss */
+/* line 44, ../sass/main.scss */
 .promotion span:hover {
   cursor: pointer;
   text-shadow: white 0px 0px 10px;
 }
 
-/* line 49, ../sass/main.scss */
+/* line 51, ../sass/main.scss */
 #menu {
   font-family: Italianno, sans-serif;
   top: 5%;
@@ -63,18 +65,18 @@ h1 {
   text-align: center;
   opacity: 0;
 }
-/* line 60, ../sass/main.scss */
+/* line 62, ../sass/main.scss */
 #menu.active {
   opacity: 1;
 }
-/* line 63, ../sass/main.scss */
+/* line 65, ../sass/main.scss */
 #menu.transition {
   -moz-transition: opacity 3s;
   -o-transition: opacity 3s;
   -webkit-transition: opacity 3s;
   transition: opacity 3s;
 }
-/* line 66, ../sass/main.scss */
+/* line 68, ../sass/main.scss */
 #menu span {
   background-color: #5f5f5f;
   color: #fff;
@@ -92,19 +94,19 @@ h1 {
   cursor: pointer;
   padding: .2em 0 .3em;
 }
-/* line 78, ../sass/main.scss */
+/* line 80, ../sass/main.scss */
 #menu span:hover {
   background-color: #999;
 }
 
-/* line 84, ../sass/main.scss */
+/* line 86, ../sass/main.scss */
 #perspectivewrapper {
   -moz-perspective: 600px;
   -webkit-perspective: 600px;
   perspective: 600px;
 }
 
-/* line 88, ../sass/main.scss */
+/* line 90, ../sass/main.scss */
 #board div {
   width: 1em;
   height: 1em;
@@ -116,18 +118,18 @@ h1 {
   -webkit-transition: -webkit-transform 120s;
   transition: transform 120s;
 }
-/* line 94, ../sass/main.scss */
+/* line 96, ../sass/main.scss */
 #board div:nth-child(9n - 8), #board div:nth-child(9n - 6), #board div:nth-child(9n - 4), #board div:nth-child(9n - 2), #board div:nth-child(9n + 17), #board div:nth-child(9n + 33), #board div:nth-child(9n + 49) {
   background-color: #F19C23;
   color: inherit;
 }
-/* line 98, ../sass/main.scss */
+/* line 100, ../sass/main.scss */
 #board div:nth-child(9n + 25), #board div:nth-child(9n + 41), #board div:nth-child(9n + 57) {
   background-color: #96631A;
   color: inherit;
 }
 
-/* line 105, ../sass/main.scss */
+/* line 107, ../sass/main.scss */
 #game {
   font-size: 4em;
   width: 8em;
@@ -143,18 +145,18 @@ h1 {
   -webkit-user-select: none;
   user-select: none;
 }
-/* line 115, ../sass/main.scss */
+/* line 117, ../sass/main.scss */
 #game.transition {
   -moz-transition: -moz-transform 2s;
   -o-transition: -o-transform 2s;
   -webkit-transition: -webkit-transform 2s;
   transition: transform 2s;
 }
-/* line 119, ../sass/main.scss */
+/* line 121, ../sass/main.scss */
 #game.draw {
   border: double 1em #888;
 }
-/* line 122, ../sass/main.scss */
+/* line 124, ../sass/main.scss */
 #game.draw:after, #game.draw:before {
   content: 'Draw';
   font-family: Italianno, sans-serif;
@@ -164,19 +166,19 @@ h1 {
   width: 4em;
   text-align: center;
 }
-/* line 132, ../sass/main.scss */
+/* line 134, ../sass/main.scss */
 #game.draw:after {
   top: -2.5em;
 }
-/* line 136, ../sass/main.scss */
+/* line 138, ../sass/main.scss */
 #game.draw:before {
   bottom: -2.5em;
 }
-/* line 141, ../sass/main.scss */
+/* line 143, ../sass/main.scss */
 #game.in_check {
   border: double 1em #000;
 }
-/* line 144, ../sass/main.scss */
+/* line 146, ../sass/main.scss */
 #game.in_check:after, #game.in_check:before {
   content: 'Check';
   font-family: Italianno, sans-serif;
@@ -186,19 +188,19 @@ h1 {
   width: 4em;
   text-align: center;
 }
-/* line 154, ../sass/main.scss */
+/* line 156, ../sass/main.scss */
 #game.in_check:after {
   top: -2.5em;
 }
-/* line 158, ../sass/main.scss */
+/* line 160, ../sass/main.scss */
 #game.in_check:before {
   bottom: -2.5em;
 }
-/* line 163, ../sass/main.scss */
+/* line 165, ../sass/main.scss */
 #game.in_check.mate:after, #game.in_check.mate:before {
   content: "-Checkmate-";
 }
-/* line 167, ../sass/main.scss */
+/* line 169, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n) {
   -moz-transform: translateZ(-10em);
   -ms-transform: translateZ(-10em);
@@ -206,7 +208,7 @@ h1 {
   -webkit-transform: translateZ(-10em);
   transform: translateZ(-10em);
 }
-/* line 170, ../sass/main.scss */
+/* line 172, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+1) {
   -moz-transform: translateZ(-25em);
   -ms-transform: translateZ(-25em);
@@ -214,7 +216,7 @@ h1 {
   -webkit-transform: translateZ(-25em);
   transform: translateZ(-25em);
 }
-/* line 173, ../sass/main.scss */
+/* line 175, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+2) {
   -moz-transform: translateZ(-7em);
   -ms-transform: translateZ(-7em);
@@ -222,7 +224,7 @@ h1 {
   -webkit-transform: translateZ(-7em);
   transform: translateZ(-7em);
 }
-/* line 176, ../sass/main.scss */
+/* line 178, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+3) {
   -moz-transform: translateZ(-19em);
   -ms-transform: translateZ(-19em);
@@ -230,7 +232,7 @@ h1 {
   -webkit-transform: translateZ(-19em);
   transform: translateZ(-19em);
 }
-/* line 179, ../sass/main.scss */
+/* line 181, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+4) {
   -moz-transform: translateZ(-34em);
   -ms-transform: translateZ(-34em);
@@ -238,7 +240,7 @@ h1 {
   -webkit-transform: translateZ(-34em);
   transform: translateZ(-34em);
 }
-/* line 182, ../sass/main.scss */
+/* line 184, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+5) {
   -moz-transform: translateZ(-47em);
   -ms-transform: translateZ(-47em);
@@ -246,7 +248,7 @@ h1 {
   -webkit-transform: translateZ(-47em);
   transform: translateZ(-47em);
 }
-/* line 185, ../sass/main.scss */
+/* line 187, ../sass/main.scss */
 #game.in_check.mate #board div:nth-child(7n+6) {
   -moz-transform: translateZ(-14em);
   -ms-transform: translateZ(-14em);
@@ -255,7 +257,7 @@ h1 {
   transform: translateZ(-14em);
 }
 
-/* line 193, ../sass/main.scss */
+/* line 195, ../sass/main.scss */
 #pieces span, #possible_moves span {
   display: block;
   width: 1em;
@@ -277,7 +279,7 @@ h1 {
   transform: translateZ(0.06em);
 }
 
-/* line 207, ../sass/main.scss */
+/* line 209, ../sass/main.scss */
 #pieces span.upright, #possible_moves.upright span {
   -moz-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
   -ms-transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
@@ -286,108 +288,108 @@ h1 {
   transform: rotateX(-90deg) rotateY(0deg) translateY(-0.5em);
 }
 
-/* line 212, ../sass/main.scss */
+/* line 214, ../sass/main.scss */
 #pieces .active span:hover {
   text-shadow: #fff 0px 0px 20px;
 }
-/* line 215, ../sass/main.scss */
+/* line 217, ../sass/main.scss */
 #pieces #black {
   color: #000;
   background-color: inherit;
   text-shadow: 0 0 3px #fff;
 }
-/* line 220, ../sass/main.scss */
+/* line 222, ../sass/main.scss */
 #pieces #white {
   color: #fff;
   background-color: inherit;
 }
-/* line 223, ../sass/main.scss */
+/* line 225, ../sass/main.scss */
 #pieces #white span {
   top: 7em;
 }
-/* line 226, ../sass/main.scss */
+/* line 228, ../sass/main.scss */
 #pieces #white .pawn {
   top: 6em;
 }
-/* line 230, ../sass/main.scss */
+/* line 232, ../sass/main.scss */
 #pieces .bishop {
   left: 2em;
 }
-/* line 232, ../sass/main.scss */
+/* line 234, ../sass/main.scss */
 #pieces .bishop + .bishop {
   left: 5em;
 }
-/* line 236, ../sass/main.scss */
+/* line 238, ../sass/main.scss */
 #pieces .king {
   left: 4em;
 }
-/* line 239, ../sass/main.scss */
+/* line 241, ../sass/main.scss */
 #pieces .knight {
   left: 1em;
 }
-/* line 241, ../sass/main.scss */
+/* line 243, ../sass/main.scss */
 #pieces .knight + .knight {
   left: 6em;
 }
-/* line 246, ../sass/main.scss */
+/* line 248, ../sass/main.scss */
 #pieces .pawn {
   top: 1em;
 }
-/* line 248, ../sass/main.scss */
+/* line 250, ../sass/main.scss */
 #pieces .pawn + .pawn {
   left: 1em;
 }
-/* line 250, ../sass/main.scss */
+/* line 252, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn {
   left: 2em;
 }
-/* line 252, ../sass/main.scss */
+/* line 254, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn + .pawn {
   left: 3em;
 }
-/* line 254, ../sass/main.scss */
+/* line 256, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn + .pawn + .pawn {
   left: 4em;
 }
-/* line 256, ../sass/main.scss */
+/* line 258, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
   left: 5em;
 }
-/* line 258, ../sass/main.scss */
+/* line 260, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
   left: 6em;
 }
-/* line 260, ../sass/main.scss */
+/* line 262, ../sass/main.scss */
 #pieces .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn + .pawn {
   left: 7em;
 }
-/* line 270, ../sass/main.scss */
+/* line 272, ../sass/main.scss */
 #pieces .queen {
   left: 3em;
 }
-/* line 273, ../sass/main.scss */
+/* line 275, ../sass/main.scss */
 #pieces .rook + .rook {
   left: 7em;
 }
-/* line 276, ../sass/main.scss */
+/* line 278, ../sass/main.scss */
 #pieces .selected {
   text-shadow: white 0px 0px 20px;
 }
 
-/* line 282, ../sass/main.scss */
+/* line 284, ../sass/main.scss */
 #possible_moves span {
   opacity: .1;
 }
-/* line 284, ../sass/main.scss */
+/* line 286, ../sass/main.scss */
 #possible_moves span:hover {
   opacity: .3;
 }
-/* line 288, ../sass/main.scss */
+/* line 290, ../sass/main.scss */
 #possible_moves .capture {
   background-color: #f00;
   opacity: .3;
 }
-/* line 291, ../sass/main.scss */
+/* line 293, ../sass/main.scss */
 #possible_moves .capture:hover {
   opacity: .5;
 }

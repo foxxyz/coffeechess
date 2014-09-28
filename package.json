@@ -1,0 +1,27 @@
+{
+  "name": "coffee-chess",
+  "version": "0.0.1",
+  "description": "CoffeeScript Chess Engine",
+  "main": "coffeechess/static/js/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "coffee-script": "^1.7.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foxxyz/coffeechess.git"
+  },
+  "keywords": [
+    "coffescript",
+    "chess"
+  ],
+  "author": "Ivo Janssen (foxxyz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxxyz/coffeechess/issues"
+  },
+  "homepage": "https://github.com/foxxyz/coffeechess"
+}
