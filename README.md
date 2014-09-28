@@ -8,7 +8,7 @@ Try it out: [http://playchess.once.today](http://playchess.once.today)
 ### Features
 
 * Basic Player vs. Player, Computer vs. Player and Computer vs. Computer play
-* Board setups using Forsyth-Edwards Notation (FEN)
+* Board setups using [Forsyth-Edwards Notation (FEN)](http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation)
 * Plays well on phones and tablets!
 
 ### Not Currently Implemented
